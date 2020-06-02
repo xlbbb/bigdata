@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gxzy.bigdata.einfo.dao.ElnfoNewMapper">
+
+
+    <select id="FindEMI" resultType="com.gxzy.bigdata.einfo.vo.EmpMachInfo">
+
+         SELECT
+            emp_mach_info.id id,
+            emp_mach_info.machine_no machineno,
+            emp_mach_info.jj_type jjtype,
+            emp_mach_info.bz_zj_type bzzjtype,
+            emp_mach_info.bz_fj_type bzfjtype
+         FROM
+          equiinfo.emp_mach_info;
+          ORDER BY
+            machineno ASC
+    </select>
+
+
+    <insert id="addEMI" parameterType="com.gxzy.bigdata.einfo.vo.EmpTJInfo">
+        INSERT INTO emp_mach_info(
+        emp_mach_info.id,
+        emp_mach_info.machine_no,
+        emp_mach_info.jj_type,
+        emp_mach_info.bz_zj_type,
+        emp_mach_info.bz_fj_type)
+        VALUES
+        #{id,jdbcType=INTEGER},
+        #{machine_no,jdbcType=INTEGER },
+        #{jj_type,jdbcType=VARCHAR },
+        #{bz_zj_type,jdbcType=VARCHAR },
+        #{bz_fj_type,jdbcType=VARCHAR });
+
+    </insert>
+
+    <delete id="delEMI" parameterType="int">
+
+        delete from emp_mach_info
+        where emp_mach_info.id = #{EMid,jdbcType=INTEGER}
+
+    </delete>
+
+
+</mapper>

@@ -1,0 +1,98 @@
+# 配置端口
+server:
+  port: 8001
+spring:
+  datasource:
+    primary: #mysql database config
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-Class-Name: com.mysql.cj.jdbc.Driver
+      jdbc-Url: jdbc:mysql://localhost:3306/equiinfo?useUnicode=true&zeroDateTimeBehavior=convertToNull&autoReconnect=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+      username: root
+      password: 123456
+      filters: stat,wall,log4j,config
+      max-active: 100
+      initial-size: 1
+      max-wait: 60000
+      min-idle: 1
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      validation-query: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      pool-prepared-statements: true
+      max-open-prepared-statements: 50
+      max-pool-prepared-statement-per-connection-size: 20
+    secondary: #oracle database config
+      type: com.alibaba.druid.pool.DruidDataSource
+      driver-Class-Name: oracle.jdbc.OracleDriver
+      jdbc-Url: jdbc:oracle:thin:@10.162.80.6:1521/mesdb
+      username: xxgly
+      password: xxgly
+#      jdbc-Url: jdbc:oracle:thin:@localhost:1521/ORCL
+#      username: scott
+#      password: 123456
+
+      configuration:
+        maximum-pool-size: 10
+  jackson:
+    #时区
+    time-zone: GMT+8
+    #日期格式化
+#    date-format: yyyy-MM-dd HH:mm:ss
+    serialization:
+       #格式化输出
+      indent_output: true
+      #忽略无法转换的对象
+      fail_on_empty_beans: false
+    #设置空如何序列化
+    defaultPropertyInclusion: NON_NULL
+    deserialization:
+      #允许对象忽略json中不存在的属性
+      fail_on_unknown_properties: false
+    parser:
+      #允许出现特殊字符和转义符
+      allow_unquoted_control_chars: true
+      #允许出现单引号
+      allow_single_quotes: true
+
+logging:
+  level:
+    com:
+      gxzy:
+        bigdata: DEBUG
+
+# Redis数据库索引（默认为0）
+  redis:
+    database: 0
+# Redis服务器地址
+    host : localhost
+# Redis服务器连接端口
+    port : 6379
+# Redis服务器连接密码（默认为空）
+    password :
+# 连接超时时间（毫秒）
+    timeout : 0
+    jedis:
+# 连接池最大连接数（使用负值表示没有限制）
+      pool:
+        max-active : 8
+# 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait : -1
+# 连接池中的最大空闲连接
+        max-idle : 8
+# 连接池中的最小空闲连接
+        min-idle : 0
+
+# 分页配置
+pagehelper:
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countsql
+
+
+bigData:
+  api:
+    excelUri: /excel
+    getSHIFTUri: /getSHIFT

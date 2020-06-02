@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gxzy.bigdata.einfo.dao.ETJInfoMapper">
+
+
+    <resultMap id="EmpTJInfoMap" type="com.gxzy.bigdata.einfo.vo.EmpTJInfo">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <collection property="brands" javaType="java.util.List" ofType="String" select="selectTJBrands" column="id"/>
+        <collection property="tingJiRes" javaType="java.util.List" ofType="com.gxzy.bigdata.einfo.vo.TingJiR"
+                    select="selectJiRes" column="id"/>
+        <collection property="tingJiTimes" javaType="java.util.List" ofType="com.gxzy.bigdata.einfo.vo.TingJiTime"
+                    select="selectJiTimes" column="id"/>
+    </resultMap>
+
+    <select id="findPage" resultMap="EmpTJInfoMap">
+        SELECT
+            emp_tj_info.id,
+            emp_tj_info.ji_zhang jiZhang,
+            emp_tj_info.z_r_wei_xiu zRWeiXiu,
+            emp_tj_info.machine_no machineNo,
+            emp_tj_info.machine_type machineType,
+            emp_tj_info.ban_ci banCi,
+            emp_tj_info.ban_bie banBie,
+            emp_tj_info.time,
+            emp_tj_info.chan_liang chanLiang,
+            emp_tj_info.ting_ji_NUM tingJiNUM,
+            emp_tj_info.feiPL
+        FROM
+            emp_tj_info
+        ORDER BY
+            emp_tj_info.time DESC
+    </select>
+
+    <select id="findPageSearch" parameterType="String" resultMap="EmpTJInfoMap">
+        SELECT
+        emp_tj_info.id,
+        emp_tj_info.ji_zhang jiZhang,
+        emp_tj_info.z_r_wei_xiu zRWeiXiu,
+        emp_tj_info.machine_no machineNo,
+        emp_tj_info.machine_type machineType,
+        emp_tj_info.ban_ci banCi,
+        emp_tj_info.ban_bie banBie,
+        emp_tj_info.time,
+        emp_tj_info.chan_liang chanLiang,
+        emp_tj_info.ting_ji_NUM tingJiNUM,
+        emp_tj_info.feiPL
+        FROM
+        emp_tj_info
+        where
+        1 = 1
+        <if test="banBie != null and banBie != ''">
+            AND emp_tj_info.ban_bie = #{banBie, jdbcType=VARCHAR}
+        </if>
+        <if test="sTime != null and sTime != ''">
+            AND emp_tj_info.time >= #{sTime} AND emp_tj_info.time <![CDATA[ <= ]]> #{eTime}
+        </if>
+        <if test="zRWeiXiu != null and zRWeiXiu != ''">
+            <bind name="zRWeiXiu" value="'%' + _parameter.zRWeiXiu + '%'"/>
+            AND emp_tj_info.z_r_wei_xiu like #{zRWeiXiu}
+        </if>
+        <if test="machineType != null and machineType != ''">
+            AND emp_tj_info.machine_type = #{machineType, jdbcType=VARCHAR}
+        </if>
+        ORDER BY
+        emp_tj_info.time DESC ,FIELD(emp_tj_info.ban_ci,'B','Z','L')
+
+    </select>
+
+    <select id="findZRWXName" resultType="com.gxzy.bigdata.vo.CustomOptions" parameterType="String">
+        SELECT
+            emp_tj_info.z_r_wei_xiu AS `value`,
+            emp_tj_info.id AS label
+        FROM
+          emp_tj_info
+        WHERE
+          DATE_SUB(CURDATE(), INTERVAL 30 DAY) <![CDATA[ <= ]]> emp_tj_info.time
+        GROUP BY
+          emp_tj_info.z_r_wei_xiu
+
+    </select>
+
+    <select id="selectTJBrands" resultType="String" parameterType="String">
+        SELECT
+          emp_tj_brand.brand_id brand
+        FROM
+          emp_tj_brand
+        WHERE
+          emp_tj_brand.tj_id =  #{id}
+    </select>
+
+    <!--新增停机数据时查找牌号用-->
+    <select id="addSTJBrands" resultType="String" parameterType="String">
+        SELECT
+          emp_brand.id
+        FROM
+          emp_brand
+        WHERE
+            emp_brand.del_flag = 0 AND
+        <if test="brandName != null and brandName != ''">
+          <bind name="brandName" value="'%' + _parameter.brandName + '%'"/>
+            emp_brand.brand LIKE #{brandName}
+        </if>
+    </select>
+
+    <select id="selectJiRes" resultType="com.gxzy.bigdata.einfo.vo.TingJiR" parameterType="String">
+        SELECT
+            emp_tj_reason.tjzy,
+            emp_tj_reason.tjcs,
+            emp_tj_reason.`key`
+        FROM
+            emp_tj_reason
+        WHERE
+            emp_tj_reason.id =  #{id}
+        ORDER BY
+            emp_tj_reason.tjcs DESC
+    </select>
+
+    <select id="selectJiTimes" resultType="com.gxzy.bigdata.einfo.vo.TingJiTime" parameterType="String">
+        SELECT
+            emp_tj_time.tjsj,
+            emp_tj_time.tjsjzy,
+            emp_tj_time.`key`
+        FROM
+            emp_tj_time
+        WHERE
+            emp_tj_time.id =  #{id}
+        ORDER BY
+            emp_tj_time.tjsj DESC
+    </select>
+
+    <select id="findPackWorkOrderOutput" resultType="com.gxzy.bigdata.mes.vo.OrderOutput" parameterType="String">
+        SELECT
+            packworkorderoutput.id,
+            packworkorderoutput.shiftid,
+            packworkorderoutput.shiftname,
+            packworkorderoutput.teamid,
+            packworkorderoutput.teamname,
+            packworkorderoutput.materialid,
+            packworkorderoutput.materialname,
+            packworkorderoutput.measurename,
+            packworkorderoutput.operatetime,
+            packworkorderoutput.operateuserid,
+            packworkorderoutput.operateusername,
+            packworkorderoutput.quantity,
+            packworkorderoutput.operflagid,
+            packworkorderoutput.operflagname,
+            packworkorderoutput.isdeleted,
+            packworkorderoutput.islocked,
+            packworkorderoutput.businessdate,
+            packworkorderoutput.remark,
+            packworkorderoutput.stateid,
+            packworkorderoutput.statename,
+            packworkorderoutput.typeid,
+            packworkorderoutput.typename,
+            packworkorderoutput.isreported,
+            packworkorderoutput.workorderid,
+            packworkorderoutput.workordercode,
+            packworkorderoutput.processunitid,
+            packworkorderoutput.processunitname,
+            packworkorderoutput.productsegmentid,
+            packworkorderoutput.productsegmentname,
+            packworkorderoutput.workorderexecuteresultid
+        FROM
+            packworkorderoutput
+        WHERE 1 = 1
+        <if test="processunitname != null and processunitname != ''">
+          <bind name="processunitname" value="'%' + _parameter.processunitname + '%'"/>
+            AND packworkorderoutput.processunitname LIKE #{processunitname}
+        </if>
+        <if test="operflagname != null and operflagname != ''">
+            AND packworkorderoutput.operflagname = #{operflagname}
+        </if>
+        <if test="productsegmentname != null and productsegmentname != ''">
+          <bind name="productsegmentname" value="'%' + _parameter.productsegmentname + '%'"/>
+            AND packworkorderoutput.productsegmentname LIKE #{productsegmentname}
+        </if>
+        ORDER BY
+            packworkorderoutput.businessdate DESC,packworkorderoutput.operatetime DESC
+        LIMIT 1
+    </select>
+
+    <insert id="save" parameterType="com.gxzy.bigdata.einfo.vo.EmpTJInfo">
+        INSERT INTO emp_tj_info (
+            emp_tj_info.id,
+            emp_tj_info.ji_zhang,
+            emp_tj_info.z_r_wei_xiu,
+            emp_tj_info.machine_no,
+            emp_tj_info.machine_type,
+            emp_tj_info.ban_ci,
+            emp_tj_info.ban_bie,
+            emp_tj_info.time,
+            emp_tj_info.chan_liang,
+            emp_tj_info.ting_ji_NUM,
+            emp_tj_info.feiPL)
+        values (
+            #{id,jdbcType=VARCHAR},
+            #{jiZhang,jdbcType=VARCHAR},
+            #{zRWeiXiu,jdbcType=VARCHAR},
+            #{machineNo,jdbcType=INTEGER},
+            #{machineType,jdbcType=VARCHAR},
+            #{banCi,jdbcType=VARCHAR},
+            #{banBie,jdbcType=VARCHAR},
+            #{time,jdbcType=DATE},
+            #{chanLiang,jdbcType=DOUBLE},
+            #{tingJiNUM,jdbcType=INTEGER},
+            #{feiPL,jdbcType=DOUBLE})
+    </insert>
+
+    <insert id="saveEmpTJBrand" parameterType="String">
+        INSERT INTO emp_tj_brand (
+            emp_tj_brand.tj_id,
+            emp_tj_brand.brand_id)
+        values (
+            #{tJID,jdbcType=BIGINT},
+            #{brandID,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="saveTingJiR" parameterType="com.gxzy.bigdata.einfo.vo.TingJiR">
+        INSERT INTO emp_tj_reason (
+            emp_tj_reason.id,
+            emp_tj_reason.tjzy,
+            emp_tj_reason.tjcs,
+            emp_tj_reason.`key`)
+        values (
+            #{id,jdbcType=BIGINT},
+            #{tjzy,jdbcType=BIGINT},
+            #{tjcs,jdbcType=BIGINT},
+            #{key,jdbcType=BIGINT})
+    </insert>
+
+    <insert id="saveTingJiTime" parameterType="com.gxzy.bigdata.einfo.vo.TingJiTime">
+        INSERT INTO emp_tj_time (
+            emp_tj_time.id,
+            emp_tj_time.tjsj,
+            emp_tj_time.tjsjzy,
+            emp_tj_time.`key`)
+        values (
+            #{id,jdbcType=BIGINT},
+            #{tjsj,jdbcType=BIGINT},
+            #{tjsjzy,jdbcType=BIGINT},
+            #{key,jdbcType=BIGINT})
+    </insert>
+
+    <update id="update" parameterType="com.gxzy.bigdata.einfo.vo.EmpTJInfo">
+        update emp_tj_info
+        set
+            emp_tj_info.ji_zhang = #{jiZhang,jdbcType=VARCHAR},
+            emp_tj_info.z_r_wei_xiu = #{zRWeiXiu,jdbcType=VARCHAR},
+            emp_tj_info.machine_no = #{machineNo,jdbcType=VARCHAR},
+            emp_tj_info.machine_type = #{machineType,jdbcType=VARCHAR},
+            emp_tj_info.ban_ci = #{banCi,jdbcType=VARCHAR},
+            emp_tj_info.ban_bie = #{banBie,jdbcType=VARCHAR},
+            emp_tj_info.time = #{time,jdbcType=VARCHAR},
+            emp_tj_info.chan_liang = #{chanLiang,jdbcType=VARCHAR},
+            emp_tj_info.ting_ji_NUM = #{tingJiNUM,jdbcType=VARCHAR},
+            emp_tj_info.feiPL = #{feiPL,jdbcType=DOUBLE}
+        where emp_tj_info.id = #{id,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        delete from emp_tj_info
+        where emp_tj_info.id = #{empTJInfoID,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteEmpTJBrand" parameterType="String">
+        delete from emp_tj_brand
+        where emp_tj_brand.tj_id = #{empTJInfoID,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteTingJiR" parameterType="String">
+        delete from emp_tj_reason
+        where emp_tj_reason.id = #{empTJInfoID,jdbcType=BIGINT}
+    </delete>
+
+    <delete id="deleteTingJiTime" parameterType="String">
+        delete from emp_tj_time
+        where emp_tj_time.id = #{empTJInfoID,jdbcType=BIGINT}
+    </delete>
+
+</mapper>

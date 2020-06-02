@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.gxzy.bigdata.einfo.dao.EInfoMapper">
+
+
+    <select id="findMachInfoAll" resultType="com.gxzy.bigdata.einfo.vo.MachInfo">
+            SELECT
+                emp_mach_info.id id,
+                emp_mach_info.machine_no machineNo,
+                emp_mach_info.jj_type jJType,
+                emp_mach_info.bz_zj_type bZZJType,
+                emp_mach_info.bz_fj_type bZFJType
+            FROM
+                emp_mach_info
+            ORDER BY
+            machineNo ASC
+  </select>
+
+
+    <select id="findBrandAll" resultType="com.gxzy.bigdata.einfo.vo.Brand">
+            SELECT
+                emp_brand.id id,
+                emp_brand.ji_xing jiXing,
+                emp_brand.brand
+            FROM
+                emp_brand
+            WHERE
+                emp_brand.del_flag = 0
+            ORDER BY
+                jiXing DESC,
+                emp_brand.brand ASC
+  </select>
+
+    <insert id="saveMesDBPrmPackworkorderoutput" parameterType="java.util.List" useGeneratedKeys="false">
+        insert into packworkorderoutput
+        ( packworkorderoutput.id,
+        packworkorderoutput.shiftid,
+        packworkorderoutput.shiftname,
+        packworkorderoutput.teamid,
+        packworkorderoutput.teamname,
+        packworkorderoutput.materialid,
+        packworkorderoutput.materialname,
+        packworkorderoutput.measureid,
+        packworkorderoutput.measurename,
+        packworkorderoutput.operatetime,
+        packworkorderoutput.operateuserid,
+        packworkorderoutput.operateusername,
+        packworkorderoutput.quantity,
+        packworkorderoutput.operflagid,
+        packworkorderoutput.operflagname,
+        packworkorderoutput.isdeleted,
+        packworkorderoutput.islocked,
+        packworkorderoutput.businessdate,
+        packworkorderoutput.remark,
+        packworkorderoutput.stateid,
+        packworkorderoutput.statename,
+        packworkorderoutput.typeid,
+        packworkorderoutput.typename,
+        packworkorderoutput.isreported,
+        packworkorderoutput.workorderid,
+        packworkorderoutput.workordercode,
+        packworkorderoutput.processunitid,
+        packworkorderoutput.processunitname,
+        packworkorderoutput.productsegmentid,
+        packworkorderoutput.productsegmentname,
+        packworkorderoutput.workorderexecuteresultid)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (
+            #{item.id},
+            #{item.shiftid},
+            #{item.shiftname},
+            #{item.teamid},
+            #{item.teamname},
+            #{item.materialid},
+            #{item.materialname},
+            #{item.measureid},
+            #{item.measurename},
+            #{item.operatetime},
+            #{item.operateuserid},
+            #{item.operateusername},
+            #{item.quantity},
+            #{item.operflagid},
+            #{item.operflagname},
+            #{item.isdeleted},
+            #{item.islocked},
+            #{item.businessdate},
+            #{item.remark},
+            #{item.stateid},
+            #{item.statename},
+            #{item.typeid},
+            #{item.typename},
+            #{item.isreported},
+            #{item.workorderid},
+            #{item.workordercode},
+            #{item.processunitid},
+            #{item.processunitname},
+            #{item.productsegmentid},
+            #{item.productsegmentname},
+            #{item.workorderexecuteresultid}
+            )
+        </foreach>
+        ON DUPLICATE KEY UPDATE
+        packworkorderoutput.shiftid = VALUES (packworkorderoutput.shiftid),
+        packworkorderoutput.shiftname = VALUES (packworkorderoutput.shiftname),
+        packworkorderoutput.teamid = VALUES (packworkorderoutput.teamid),
+        packworkorderoutput.teamname = VALUES (packworkorderoutput.teamname),
+        packworkorderoutput.materialid = VALUES (packworkorderoutput.materialid),
+        packworkorderoutput.materialname = VALUES (packworkorderoutput.materialname),
+        packworkorderoutput.measureid = VALUES (packworkorderoutput.measureid),
+        packworkorderoutput.measurename = VALUES (packworkorderoutput.measurename),
+        packworkorderoutput.operatetime = VALUES (packworkorderoutput.operatetime),
+        packworkorderoutput.operateuserid = VALUES (packworkorderoutput.operateuserid),
+        packworkorderoutput.operateusername = VALUES (packworkorderoutput.operateusername),
+        packworkorderoutput.quantity = VALUES (packworkorderoutput.quantity),
+        packworkorderoutput.operflagid = VALUES (packworkorderoutput.operflagid),
+        packworkorderoutput.operflagname = VALUES (packworkorderoutput.operflagname),
+        packworkorderoutput.isdeleted = VALUES (packworkorderoutput.isdeleted),
+        packworkorderoutput.islocked = VALUES (packworkorderoutput.islocked),
+        packworkorderoutput.businessdate = VALUES (packworkorderoutput.businessdate),
+        packworkorderoutput.remark = VALUES (packworkorderoutput.remark),
+        packworkorderoutput.stateid = VALUES (packworkorderoutput.stateid),
+        packworkorderoutput.statename = VALUES (packworkorderoutput.statename),
+        packworkorderoutput.typeid = VALUES (packworkorderoutput.typeid),
+        packworkorderoutput.typename = VALUES (packworkorderoutput.typename),
+        packworkorderoutput.isreported = VALUES (packworkorderoutput.isreported),
+        packworkorderoutput.workorderid = VALUES (packworkorderoutput.workorderid),
+        packworkorderoutput.workordercode = VALUES (packworkorderoutput.workordercode),
+        packworkorderoutput.processunitid = VALUES (packworkorderoutput.processunitid),
+        packworkorderoutput.processunitname = VALUES (packworkorderoutput.processunitname),
+        packworkorderoutput.productsegmentid = VALUES (packworkorderoutput.productsegmentid),
+        packworkorderoutput.productsegmentname = VALUES (packworkorderoutput.productsegmentname),
+        packworkorderoutput.workorderexecuteresultid = VALUES (packworkorderoutput.workorderexecuteresultid)
+    </insert>
+</mapper>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.gxzy.bigdata.mes.mapper.MesMapper">
+
+    <!--查询当日所有工单信息列表PRM.-->
+    <select id="findOrderOutputAll" parameterType="String" resultType="com.gxzy.bigdata.mes.vo.OrderOutput">
+        select * from PRM.PACKWORKORDEROUTPUT t where t.businessdate >= to_date(#{businessdate},'YYYY-MM-DD')
+    </select>
+
+</mapper>
